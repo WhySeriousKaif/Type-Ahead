@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchMetrics } from '../api/client';
 
-const POLL_MS = 5000;
+const POLL_MS = 1000;
 
 /* one stat tile */
 function Stat({ label, value, sub, accent = '#C4532A' }) {
@@ -98,7 +98,7 @@ export default function MetricsDashboard() {
         <h2 className="text-base font-semibold text-ink">Live Metrics</h2>
         <div className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-sage" />
-          <span className="text-xs text-muted">refresh 5s</span>
+          <span className="text-xs text-muted">refresh 1s</span>
         </div>
       </div>
 

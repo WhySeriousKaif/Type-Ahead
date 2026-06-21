@@ -98,8 +98,10 @@ public class SuggestionService {
                 .limit(MAX_SUGGESTIONS)
                 .toList();
 
-        // --- Step 4: Cache the result ---
-        cacheManager.set(normalizedPrefix, results);
+        // --- Step 4: Cache the result (only cache if suggestions are found to prevent fake hits on non-existent prefixes)
+        if (!results.isEmpty()) {
+            cacheManager.set(normalizedPrefix, results);
+        }
 
         metrics.recordLatency(System.currentTimeMillis() - startTime);
         return results;
