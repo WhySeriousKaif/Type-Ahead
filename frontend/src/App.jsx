@@ -85,8 +85,8 @@ function ArchNote({ color, title, steps }) {
 export default function App() {
   const [cacheDebug, setCacheDebug] = useState(null);
 
-  const handleSearch = useCallback(async (query) => {
-    const prefix = query.slice(0, 3);
+  const handleSearch = useCallback(async (query, typedPrefix) => {
+    const prefix = (typedPrefix || (query.length > 3 ? query.slice(0, 3) : query)).trim();
     if (prefix) {
       try { setCacheDebug(await fetchCacheDebug(prefix)); } catch {}
     }

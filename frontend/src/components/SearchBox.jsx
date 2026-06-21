@@ -64,13 +64,14 @@ export default function SearchBox({ onSearch }) {
   }
 
   const handleSelect = useCallback(async (query) => {
+    const typedPrefix = inputValue.trim();
     setInputValue(query); setIsOpen(false); setActiveIndex(-1);
     try {
       const result = await submitSearch(query);
       setLastSearched({ query, message: result.message });
-      onSearch?.(query, result);
+      onSearch?.(query, typedPrefix);
     } catch { setError('Submission failed'); }
-  }, [onSearch]);
+  }, [onSearch, inputValue]);
 
   const handleChange = (e) => {
     setInputValue(e.target.value);

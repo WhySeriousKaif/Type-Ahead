@@ -67,6 +67,17 @@ public class CacheNode {
     }
 
     /**
+     * Check if key exists in cache without incrementing hits/misses or deleting expired entries.
+     * Used by debug/inspection endpoint.
+     */
+    public synchronized List<Map<String, Object>> peek(String key) {
+        CacheEntry entry = store.get(key);
+        if (entry == null) return null;
+        if (Instant.now().isAfter(entry.expiresAt())) return null;
+        return entry.value();
+    }
+
+    /**
      * Store a value in cache with the default TTL.
      */
     public synchronized void set(String key, List<Map<String, Object>> value) {

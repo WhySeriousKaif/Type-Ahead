@@ -112,7 +112,7 @@ public class CacheManager {
         String lowerPrefix = prefix.toLowerCase();
         ConsistentHashRing.RingLookupResult lookup = ring.getNode(lowerPrefix);
         CacheNode node   = nodes.get(lookup.nodeName());
-        List<Map<String, Object>> cached = node.get(lowerPrefix);
+        List<Map<String, Object>> cached = node.peek(lowerPrefix);
 
         return Map.of(
                 "prefix",            prefix,
