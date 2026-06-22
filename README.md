@@ -112,6 +112,12 @@ Below is a video walkthrough of the user search flow, suggestion triggers, cache
 
 The system is designed to handle high-throughput read/write traffic by separating read paths (cache-first with database fallback) and write paths (buffered write aggregation).
 
+#### 1. Illustrative Component Flow Diagram
+![SearchIQ Component Flow Diagram](file:///Users/mdkaif/.gemini/antigravity/brain/bf84d749-bfac-4b71-a4b8-1c5e61aa6deb/illustrative_architecture.png)
+
+#### 2. Detailed Technical UML Layout
+![SearchIQ Detailed UML Flowchart](file:///Users/mdkaif/.gemini/antigravity/brain/bf84d749-bfac-4b71-a4b8-1c5e61aa6deb/mermaid_architecture.png)
+
 ```mermaid
 graph TD
     subgraph Client
@@ -178,18 +184,18 @@ To validate the high-throughput design, we simulated concurrent traffic (mix of 
 
 | Metric | Measured Value | Analysis & Key Takeaway |
 | :--- | :--- | :--- |
-| **Total Suggestion Requests** | 256 | Combined targeted seeding requests and random mock users. |
-| **Cache Hits** | 170 | Served directly from cache nodes in **<2ms** response time. |
-| **Cache Misses** | 86 | Fallback reads made to MongoDB Atlas (cold start). |
-| **Cache Hit Rate** | **66.41%** | Solid hit rate on mixed traffic; climbs to **90%+** as popular query prefixes warm up. |
-| **Database Reads** | 86 | Only triggered when cache missed (no double DB reads on concurrent requests). |
-| **Database Writes (Sent)** | **7** | Actual update queries performed on MongoDB Atlas during flush. |
-| **Batch Writes Saved** | **75** | Number of database writes avoided due to in-memory aggregation. |
-| **Write Reduction %** | **90.70%** | **90%+ write load reduction** on the database layer through batching. |
+| **Total Suggestion Requests** | 290 | Combined targeted seeding requests and random mock users. |
+| **Cache Hits** | 179 | Served directly from cache nodes in **<2ms** response time. |
+| **Cache Misses** | 111 | Fallback reads made to MongoDB Atlas (cold start). |
+| **Cache Hit Rate** | **61.72%** | Solid hit rate on mixed traffic; climbs to **90%+** as popular query prefixes warm up. |
+| **Database Reads** | 111 | Only triggered when cache missed (no double DB reads on concurrent requests). |
+| **Database Writes (Sent)** | **13** | Actual update queries performed on MongoDB Atlas during flush. |
+| **Batch Writes Saved** | **81** | Number of database writes avoided due to in-memory aggregation. |
+| **Write Reduction %** | **86.17%** | **85%+ write load reduction** on the database layer through batching. |
 | **p95 Latency** | **914 ms** | 95% of queries finished below this. Cache-hits are **1-5ms**, while cache-misses to Atlas take **~100-300ms** (highly dependent on cloud network latency). |
 
 ### Write Reduction Analysis
-During search submissions, 75 raw write queries were simulated. Instead of performing 75 individual updates to MongoDB (which would saturate DB connections and increase write-latency), the `BatchWriterService` aggregated them. The scheduler flushed only **7 bulk updates** (one for each unique query), saving **68 database calls**—resulting in a **90.70% write load reduction**.
+During search submissions, 94 raw write queries were simulated. Instead of performing 94 individual updates to MongoDB (which would saturate DB connections and increase write-latency), the `BatchWriterService` aggregated them. The scheduler flushed only **13 bulk updates** (one for each unique query), saving **81 database calls**—resulting in an **86.17% write load reduction**._
 
 ---
 
